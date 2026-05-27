@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image"; 
+import Image from "next/image";
 
 export default function Home() {
   const [ico, setIco] = useState("");
@@ -10,6 +10,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [history, setHistory] = useState<any[]>([]);
 
+  // Funkce pro stažení historie z naší databáze
   const fetchHistory = async () => {
     try {
       const res = await fetch('/api/history');
@@ -22,10 +23,12 @@ export default function Home() {
     }
   };
 
+  // Automatické načtení historie při zapnutí aplikace
   useEffect(() => {
     fetchHistory();
   }, []);
 
+  // Funkce pro vyhledání firmy
   const searchCompany = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -41,8 +44,8 @@ export default function Home() {
       }
 
       setCompany(data);
-      setIco(""); 
-      fetchHistory(); 
+      setIco(""); // Vyčistíme políčko po úspěšném hledání
+      fetchHistory(); // Znovu načteme historii, aby se tam objevila nová firma
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -50,6 +53,7 @@ export default function Home() {
     }
   };
 
+  // Funkce pro CSV Export (včetně ošetření české diakritiky pomocí BOM)
   const exportToCSV = () => {
     if (history.length === 0) return;
 
@@ -79,16 +83,17 @@ export default function Home() {
     <main className="min-h-screen bg-gray-50 py-12 px-4">
       <div className="max-w-4xl mx-auto space-y-8">
         
+        {/* Hlavní blok vyhledávání */}
         <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
           
-          {/* OPRAVENÉ LOGO */}
+          {/* Vizuální AI prvek (Logo) */}
           <div className="flex justify-center mb-6">
-            <div className="relative w-40 h-40">
+            <div className="relative w-64 h-64 sm:w-72 sm:h-72">
                <Image 
                  src="/logo.png" 
                  alt="FirmaCheck AI Logo" 
                  fill 
-                 className="object-contain" // Upraveno na contain pro dynamické zobrazení bez ořezu
+                 className="object-contain" 
                  onError={(e) => { e.currentTarget.style.display = 'none'; }} 
                />
             </div>
@@ -118,12 +123,14 @@ export default function Home() {
             </button>
           </form>
 
+          {/* Zobrazení chybové hlášky */}
           {error && (
             <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-5 rounded-r-lg mb-8">
               <p className="font-medium">{error}</p>
             </div>
           )}
 
+          {/* Výsledek vyhledávání s mapou */}
           {company && (
             <div className="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm mt-8 animate-fade-in-down">
               <div className="bg-gray-50 border-b border-gray-200 p-6 flex justify-between items-center">
@@ -165,7 +172,7 @@ export default function Home() {
                     style={{ border: 0, minHeight: '300px' }}
                     loading="lazy"
                     allowFullScreen
-                    src={`http://googleusercontent.com/maps.google.com/maps?q=${encodeURIComponent(company.address)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                    src={`https://maps.google.com/maps?q=${encodeURIComponent(company.address)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
                   ></iframe>
                 </div>
               </div>
@@ -173,6 +180,7 @@ export default function Home() {
           )}
         </div>
 
+        {/* Blok s historií a exportem */}
         <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
           <div className="flex flex-col sm:flex-row justify-between items-center mb-6 border-b pb-4">
             <h2 className="text-2xl font-bold text-gray-800 mb-4 sm:mb-0">Uložené firmy</h2>
