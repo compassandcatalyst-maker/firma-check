@@ -225,13 +225,12 @@ export default function Home() {
                     </div>
                   )}
 
-                  {/* INSOLVENCE ISIR */}
-                  {company.in_insolvency && (
-                    <div className="pt-2 border-t border-gray-100 mt-2">
+{/* VYLEPŠENÉ: Insolvenční rejstřík s automatickým vyhledáním IČO */}
+                  <div className="pt-2 border-t border-gray-100 mt-2">
                     <p className="text-sm text-gray-500 font-medium uppercase tracking-wide">Insolvenční rejstřík (ISIR)</p>
                     <div className="mt-1">
                       <a 
-                        href={`https://isir.justice.cz/`}
+                        href={`https://isir.justice.cz/isir/ueu/vysledek_lustrace.do?nazev_osoby=&jmeno_osoby=&ic=${company.ico}&datum_narozeni=&rc=&mesto=&cislo_senatu=&bc_vec=&rocnik=&id_osoby_puvodce=&druh_stav_konkursu=&datum_stav_od=&datum_stav_do=&aktualnost=AKTUALNI_I_UKONCENA&druh_kod_udalost=&datum_akce_od=&datum_akce_do=&nazev_osoby_f=&cislo_senatu_vsns=&druh_vec_vsns=&bc_vec_vsns=&rocnik_vsns=&cislo_senatu_icm=&bc_vec_icm=&rocnik_icm=&rowsAtOnce=50`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-block px-3 py-1 bg-yellow-100 text-yellow-800 text-sm font-bold rounded-full shadow-sm hover:bg-yellow-200 transition-colors cursor-pointer"
@@ -240,7 +239,7 @@ export default function Home() {
                       </a>
                     </div>
                   </div>
-                  )}
+                  )
 
                 </div>
 
