@@ -53,7 +53,7 @@ export default function Home() {
     }
   };
 
-  // Funkce pro CSV Export (včetně ošetření české diakritiky pomocí BOM)
+  // Funkce pro CSV Export
   const exportToCSV = () => {
     if (history.length === 0) return;
 
@@ -86,7 +86,6 @@ export default function Home() {
         {/* Hlavní blok vyhledávání */}
         <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
           
-          {/* Vizuální AI prvek (Logo) */}
           <div className="flex justify-center mb-6">
             <div className="relative w-64 h-64 sm:w-72 sm:h-72">
                <Image 
@@ -99,17 +98,18 @@ export default function Home() {
             </div>
           </div>
 
+          {/* Klikací nadpis pro návrat */}
           <h1 
-  className="text-3xl font-extrabold text-gray-900 mb-8 text-center cursor-pointer hover:text-blue-600 transition-colors inline-block w-full"
-  onClick={() => {
-    setCompany(null);
-    setIco("");
-    setError(null);
-  }}
-  title="Zpět na vyhledávání"
->
-  FirmaCheck ✅
-</h1>
+            className="text-3xl font-extrabold text-gray-900 mb-8 text-center cursor-pointer hover:text-blue-600 transition-colors inline-block w-full"
+            onClick={() => {
+              setCompany(null);
+              setIco("");
+              setError(null);
+            }}
+            title="Zpět na vyhledávání"
+          >
+            FirmaCheck ✅
+          </h1>
 
           <form onSubmit={searchCompany} className="flex flex-col sm:flex-row gap-4 mb-8">
             <input
@@ -131,7 +131,6 @@ export default function Home() {
             </button>
           </form>
 
-          {/* Zobrazení chybové hlášky */}
           {error && (
             <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-5 rounded-r-lg mb-8">
               <p className="font-medium">{error}</p>
@@ -154,24 +153,29 @@ export default function Home() {
                     <p className="text-sm text-gray-500 font-medium uppercase tracking-wide">IČO</p>
                     <p className="text-lg text-gray-900 font-semibold">{company.ico}</p>
                   </div>
+                  
+                  {/* Původní DIČ text */}
                   <div>
                     <p className="text-sm text-gray-500 font-medium uppercase tracking-wide">DIČ</p>
                     <p className="text-lg text-gray-900 font-semibold">{company.dic}</p>
                   </div>
+
+                  {/* Nový Semafor na DPH */}
                   <div>
-  <p className="text-sm text-gray-500 font-medium uppercase tracking-wide">Plátce DPH</p>
-  <div className="flex items-center mt-1">
-    {company.dic && company.dic !== 'Není plátce DPH' ? (
-      <span className="px-3 py-1 bg-green-100 text-green-800 text-sm font-bold rounded-full shadow-sm">
-        ✅ ANO ({company.dic})
-      </span>
-    ) : (
-      <span className="px-3 py-1 bg-gray-100 text-gray-500 text-sm font-bold rounded-full shadow-sm">
-        ❌ NE (Neplátce)
-      </span>
-    )}
-  </div>
+                    <p className="text-sm text-gray-500 font-medium uppercase tracking-wide">Plátce DPH</p>
+                    <div className="flex items-center mt-1">
+                      {company.dic && company.dic !== 'Není plátce DPH' ? (
+                        <span className="px-3 py-1 bg-green-100 text-green-800 text-sm font-bold rounded-full shadow-sm">
+                          ✅ ANO
+                        </span>
+                      ) : (
+                        <span className="px-3 py-1 bg-gray-100 text-gray-500 text-sm font-bold rounded-full shadow-sm">
+                          ❌ NE (Neplátce)
+                        </span>
+                      )}
+                    </div>
                   </div>
+
                   <div>
                     <p className="text-sm text-gray-500 font-medium uppercase tracking-wide">Datum vzniku</p>
                     <p className="text-lg text-gray-900">{company.created_date}</p>
@@ -184,25 +188,62 @@ export default function Home() {
                     <p className="text-sm text-gray-500 font-medium uppercase tracking-wide">Sídlo</p>
                     <p className="text-lg text-gray-900">{company.address}</p>
                   </div>
+
+                  {/* NACE */}
+                  {company.cz_nace && (
+                    <div className="pt-2 border-t border-gray-100 mt-2">
+                      <p className="text-sm text-gray-500 font-medium uppercase tracking-wide">Hlavní činnost (NACE)</p>
+                      <p className="text-lg text-gray-900">{company.cz_nace}</p>
+                    </div>
+                  )}
+
+                  {/* ZÁKLADNÍ KAPITÁL */}
+                  {company.capital && (
+                    <div className="pt-2 border-t border-gray-100 mt-2">
+                      <p className="text-sm text-gray-500 font-medium uppercase tracking-wide">Základní kapitál</p>
+                      <p className="text-lg text-gray-900">
+                        {new Intl.NumberFormat('cs-CZ', { style: 'currency', currency: 'CZK', maximumFractionDigits: 0 }).format(company.capital)}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* REGISTR MFČR */}
+                  {company.dic && company.dic !== 'Není plátce DPH' && company.reliable_vat && (
+                    <div className="pt-2 border-t border-gray-100 mt-2">
+                      <p className="text-sm text-gray-500 font-medium uppercase tracking-wide">Registr plátců DPH (MFČR)</p>
+                      <div className="mt-1">
+                        {company.reliable_vat === '✅ Spolehlivý' ? (
+                          <span className="px-3 py-1 bg-green-100 text-green-800 text-sm font-bold rounded-full shadow-sm">
+                            {company.reliable_vat}
+                          </span>
+                        ) : (
+                          <span className="px-3 py-1 bg-red-100 text-red-800 text-sm font-bold rounded-full shadow-sm animate-pulse">
+                            {company.reliable_vat}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* INSOLVENCE ISIR */}
+                  {company.in_insolvency && (
+                    <div className="pt-2 border-t border-gray-100 mt-2">
+                      <p className="text-sm text-gray-500 font-medium uppercase tracking-wide">Insolvenční rejstřík (ISIR)</p>
+                      <div className="mt-1">
+                        {company.in_insolvency === 'NE' ? (
+                          <span className="px-3 py-1 bg-green-100 text-green-800 text-sm font-bold rounded-full shadow-sm">
+                            ✅ Čistý štít
+                          </span>
+                        ) : (
+                          <span className="px-3 py-1 bg-red-600 text-white text-sm font-bold rounded-full shadow-sm animate-pulse">
+                            ⚠️ V INSOLVENCI
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
                 </div>
-
-                {/* Tento blok kódu vlož v app/page.tsx do sekce detailů, např. hned pod zobrazení 'Právní formy' */}
-
-{company.cz_nace && (
-  <div className="pt-2 border-t border-gray-100 mt-2">
-    <p className="text-sm text-gray-500 font-medium uppercase tracking-wide">Hlavní činnost (NACE)</p>
-    <p className="text-lg text-gray-900">{company.cz_nace}</p>
-  </div>
-)}
-
-{company.capital && (
-  <div className="pt-2 border-t border-gray-100 mt-2">
-    <p className="text-sm text-gray-500 font-medium uppercase tracking-wide">Základní kapitál</p>
-    <p className="text-lg text-gray-900">
-      {new Intl.NumberFormat('cs-CZ', { style: 'currency', currency: 'CZK', maximumFractionDigits: 0 }).format(company.capital)}
-    </p>
-  </div>
-)}
 
                 <div className="bg-gray-100 h-64 md:h-auto relative border-t md:border-t-0 md:border-l border-gray-200">
                   <iframe
