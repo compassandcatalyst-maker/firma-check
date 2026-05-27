@@ -99,9 +99,17 @@ export default function Home() {
             </div>
           </div>
 
-          <h1 className="text-3xl font-extrabold text-gray-900 mb-8 text-center">
-            FirmaCheck ✅
-          </h1>
+          <h1 
+  className="text-3xl font-extrabold text-gray-900 mb-8 text-center cursor-pointer hover:text-blue-600 transition-colors inline-block w-full"
+  onClick={() => {
+    setCompany(null);
+    setIco("");
+    setError(null);
+  }}
+  title="Zpět na vyhledávání"
+>
+  FirmaCheck ✅
+</h1>
 
           <form onSubmit={searchCompany} className="flex flex-col sm:flex-row gap-4 mb-8">
             <input
@@ -149,6 +157,20 @@ export default function Home() {
                   <div>
                     <p className="text-sm text-gray-500 font-medium uppercase tracking-wide">DIČ</p>
                     <p className="text-lg text-gray-900 font-semibold">{company.dic}</p>
+                  </div>
+                  <div>
+  <p className="text-sm text-gray-500 font-medium uppercase tracking-wide">Plátce DPH</p>
+  <div className="flex items-center mt-1">
+    {company.dic && company.dic !== 'Není plátce DPH' ? (
+      <span className="px-3 py-1 bg-green-100 text-green-800 text-sm font-bold rounded-full shadow-sm">
+        ✅ ANO ({company.dic})
+      </span>
+    ) : (
+      <span className="px-3 py-1 bg-gray-100 text-gray-500 text-sm font-bold rounded-full shadow-sm">
+        ❌ NE (Neplátce)
+      </span>
+    )}
+  </div>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500 font-medium uppercase tracking-wide">Datum vzniku</p>
