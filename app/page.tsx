@@ -164,6 +164,24 @@ export default function Home() {
                   </div>
                 </div>
 
+                {/* Tento blok kódu vlož v app/page.tsx do sekce detailů, např. hned pod zobrazení 'Právní formy' */}
+
+{company.cz_nace && (
+  <div className="pt-2 border-t border-gray-100 mt-2">
+    <p className="text-sm text-gray-500 font-medium uppercase tracking-wide">Hlavní činnost (NACE)</p>
+    <p className="text-lg text-gray-900">{company.cz_nace}</p>
+  </div>
+)}
+
+{company.capital && (
+  <div className="pt-2 border-t border-gray-100 mt-2">
+    <p className="text-sm text-gray-500 font-medium uppercase tracking-wide">Základní kapitál</p>
+    <p className="text-lg text-gray-900">
+      {new Intl.NumberFormat('cs-CZ', { style: 'currency', currency: 'CZK', maximumFractionDigits: 0 }).format(company.capital)}
+    </p>
+  </div>
+)}
+
                 <div className="bg-gray-100 h-64 md:h-auto relative border-t md:border-t-0 md:border-l border-gray-200">
                   <iframe
                     title="Mapa sídla"

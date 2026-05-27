@@ -34,6 +34,8 @@ export async function GET(request: Request) {
           dic: company.dic,
           legal_form: company.legal_form,
           created_date: company.created_date,
+          cz_nace: company.cz_nace, // NOVÉ: Načtení NACE z cache
+          capital: company.capital, // NOVÉ: Načtení kapitálu z cache
           source: 'cache'
         });
       }
@@ -63,25 +65,31 @@ export async function GET(request: Request) {
         created_date = dateObj.toLocaleDateString('cs-CZ');
     }
 
+    // NOVÉ: Bezpečné parsování našich bonusových dat z ARESu
+    const cz_nace = aresData.czNace ? aresData.czNace.join(', ') : null;
+    const capital = aresData.zakladniKapital?.vyse ? aresData.zakladniKapital.vyse : null;
+
     // 3. UPSERT - Vložíme novou firmu, NEBO aktualizujeme existující, pokud tam už byla
     await turso.execute({
       sql: `
-        INSERT INTO companies (ico, name, address, dic, legal_form, created_date, searched_at) 
-        VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+        INSERT INTO companies (ico, name, address, dic, legal_form, created_date, cz_nace, capital, searched_at) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
         ON CONFLICT(ico) DO UPDATE SET 
           name = excluded.name,
           address = excluded.address,
           dic = excluded.dic,
           legal_form = excluded.legal_form,
           created_date = excluded.created_date,
+          cz_nace = excluded.cz_nace,
+          capital = excluded.capital,
           searched_at = CURRENT_TIMESTAMP
       `,
-      args: [ico, name, address, dic, legal_form, created_date],
+      args: [ico, name, address, dic, legal_form, created_date, cz_nace, capital],
     });
 
     // 4. Vrácení dat uživateli
     return NextResponse.json({
-      ico, name, address, dic, legal_form, created_date, source: 'ares'
+      ico, name, address, dic, legal_form, created_date, cz_nace, capital, source: 'ares'
     });
 
   } catch (error) {
