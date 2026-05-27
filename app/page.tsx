@@ -228,19 +228,18 @@ export default function Home() {
                   {/* INSOLVENCE ISIR */}
                   {company.in_insolvency && (
                     <div className="pt-2 border-t border-gray-100 mt-2">
-                      <p className="text-sm text-gray-500 font-medium uppercase tracking-wide">Insolvenční rejstřík (ISIR)</p>
-                      <div className="mt-1">
-                        {company.in_insolvency === 'NE' ? (
-                          <span className="px-3 py-1 bg-green-100 text-green-800 text-sm font-bold rounded-full shadow-sm">
-                            ✅ Čistý štít
-                          </span>
-                        ) : (
-                          <span className="px-3 py-1 bg-red-600 text-white text-sm font-bold rounded-full shadow-sm animate-pulse">
-                            ⚠️ V INSOLVENCI
-                          </span>
-                        )}
-                      </div>
+                    <p className="text-sm text-gray-500 font-medium uppercase tracking-wide">Insolvenční rejstřík (ISIR)</p>
+                    <div className="mt-1">
+                      <a 
+                        href={`https://isir.justice.cz/`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block px-3 py-1 bg-yellow-100 text-yellow-800 text-sm font-bold rounded-full shadow-sm hover:bg-yellow-200 transition-colors cursor-pointer"
+                      >
+                        ⚠️ Prověřit ručně na Justice.cz
+                      </a>
                     </div>
+                  </div>
                   )}
 
                 </div>
